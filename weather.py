@@ -3,7 +3,6 @@ from datetime import datetime
 
 DEGREE_SYMBOL = u"\N{DEGREE SIGN}C"
 
-
 def format_temperature(temp):
     """Takes a temperature and returns it in string format with the degrees
         and Celcius symbols.
