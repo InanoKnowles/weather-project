@@ -288,6 +288,75 @@ def find_max(weather_data):
 # get_csv_file_input = input("Enter the CSV file name (e.g. weather.csv): ")
 
 # Create a function that generates a weather summary from the data
+# def generate_summary(weather_data):
+#     """Outputs a summary for the given weather data.
+
+#     Args:
+#         weather_data: A list of lists, where each sublist represents a day of weather data.
+#     Returns:
+#         A string containing the summary information.
+#     """
+
+#     # Check if the input data is empty and return a default summary
+#     if not weather_data:
+#         return "0 Day Overview\n  The lowest temperature will be 0.0°C, and will occur on .\n  The highest temperature will be 0.0°C, and will occur on .\n  The average low this week is 0.0°C.\n  The average high this week is 0.0°C.\n"
+
+#     # Extract only the date values from each row of the data
+#     dates = [row[0] for row in weather_data]
+
+#     # Extract and clean the minimum Fahrenheit values from the data
+#     min_fahrenheit_list = [float(str(row[1]).strip()) for row in weather_data]
+
+#     # Extract and clean the maximum Fahrenheit values from the data
+#     max_fahrenheit_list = [float(str(row[2]).strip()) for row in weather_data]
+
+#     # Find the lowest Fahrenheit value and its index position
+#     min_number_f, min_index = find_min(min_fahrenheit_list)
+
+#     # Find the highest Fahrenheit value and its index position
+#     max_number_f, max_index = find_max(max_fahrenheit_list)
+
+#     # Convert the minimum Fahrenheit value to Celsius
+#     min_number_c = (min_number_f - 32.0) * 5.0 / 9.0
+
+#     # Convert the maximum Fahrenheit value to Celsius
+#     max_number_c = (max_number_f - 32.0) * 5.0 / 9.0
+
+#     # Get the ISO date for when the minimum temperature occurred
+#     min_date_iso = dates[min_index]
+
+#     # Get the ISO date for when the maximum temperature occurred
+#     max_date_iso = dates[max_index]
+
+#     # Format the minimum date
+#     min_date = datetime.fromisoformat(min_date_iso).strftime("%A %d %B %Y")
+
+#     # Format the maximum date
+#     max_date = datetime.fromisoformat(max_date_iso).strftime("%A %d %B %Y")
+
+#     # Calculate the average of the minimum temperatures in Celsius
+#     average_min_c = ((calculate_mean(min_fahrenheit_list) - 32.0) * 5.0 / 9.0)
+
+#     # Calculate the average of the maximum temperatures in Celsius
+#     average_max_c = ((calculate_mean(max_fahrenheit_list) - 32.0) * 5.0 / 9.0)
+
+#     # Build the summary string with all calculated information
+#     summary = (
+#         f"{len(weather_data)} Day Overview\n"
+#         f"  The lowest temperature will be {min_number_c:.1f}°C, and will occur on {min_date}.\n"
+#         f"  The highest temperature will be {max_number_c:.1f}°C, and will occur on {max_date}.\n"
+#         f"  The average low this week is {average_min_c:.1f}°C.\n"
+#         f"  The average high this week is {average_max_c:.1f}°C.\n"
+#     )
+
+#     # Return the final summary
+#     return summary
+
+# Call and print function with user input
+# print(generate_summary(get_csv_file_input))
+
+# No.7  ---> Using the above functions:
+
 def generate_summary(weather_data):
     """Outputs a summary for the given weather data.
 
@@ -297,63 +366,52 @@ def generate_summary(weather_data):
         A string containing the summary information.
     """
 
-    # Check if the input data is empty and return a default summary
+    # If the weather_data list is empty, return the default summary
     if not weather_data:
-        return "0 Day Overview\n  The lowest temperature will be 0.0°C, and will occur on .\n  The highest temperature will be 0.0°C, and will occur on .\n  The average low this week is 0.0°C.\n  The average high this week is 0.0°C.\n"
+        return (
+            "0 Day Overview\n"
+            "  The lowest temperature will be 0.0°C, and will occur on .\n"
+            "  The highest temperature will be 0.0°C, and will occur on .\n"
+            "  The average low this week is 0.0°C.\n"
+            "  The average high this week is 0.0°C.\n"
+        )
 
-    # Extract only the date values from each row of the data
+    # Extract all the min and max values (in Fahrenheit)
+    min_temps = [float(row[1]) for row in weather_data]
+    max_temps = [float(row[2]) for row in weather_data]
+
+    # Extract all the dates
     dates = [row[0] for row in weather_data]
 
-    # Extract and clean the minimum Fahrenheit values from the data
-    min_fahrenheit_list = [float(str(row[1]).strip()) for row in weather_data]
+    # Find the minimum temperature and its index
+    min_temp_f, min_index = find_min(min_temps)
+    # Convert min temp to Celsius
+    min_temp_c = format_temperature(convert_f_to_c(min_temp_f))
+    # Convert corresponding date to readable format
+    min_temp_date = convert_date(dates[min_index])
 
-    # Extract and clean the maximum Fahrenheit values from the data
-    max_fahrenheit_list = [float(str(row[2]).strip()) for row in weather_data]
+    # Find the maximum temperature and its index
+    max_temp_f, max_index = find_max(max_temps)
+    # Convert max temp to Celsius
+    max_temp_c = format_temperature(convert_f_to_c(max_temp_f))
+    # Convert corresponding date to readable format
+    max_temp_date = convert_date(dates[max_index])
 
-    # Find the lowest Fahrenheit value and its index position
-    min_number_f, min_index = find_min(min_fahrenheit_list)
+    # Calculate average low and high temps in Celsius
+    average_min_c = format_temperature(round(convert_f_to_c(calculate_mean(min_temps)), 1))
+    average_max_c = format_temperature(round(convert_f_to_c(calculate_mean(max_temps)), 1))
 
-    # Find the highest Fahrenheit value and its index position
-    max_number_f, max_index = find_max(max_fahrenheit_list)
-
-    # Convert the minimum Fahrenheit value to Celsius
-    min_number_c = (min_number_f - 32.0) * 5.0 / 9.0
-
-    # Convert the maximum Fahrenheit value to Celsius
-    max_number_c = (max_number_f - 32.0) * 5.0 / 9.0
-
-    # Get the ISO date for when the minimum temperature occurred
-    min_date_iso = dates[min_index]
-
-    # Get the ISO date for when the maximum temperature occurred
-    max_date_iso = dates[max_index]
-
-    # Format the minimum date
-    min_date = datetime.fromisoformat(min_date_iso).strftime("%A %d %B %Y")
-
-    # Format the maximum date
-    max_date = datetime.fromisoformat(max_date_iso).strftime("%A %d %B %Y")
-
-    # Calculate the average of the minimum temperatures in Celsius
-    average_min_c = ((calculate_mean(min_fahrenheit_list) - 32.0) * 5.0 / 9.0)
-
-    # Calculate the average of the maximum temperatures in Celsius
-    average_max_c = ((calculate_mean(max_fahrenheit_list) - 32.0) * 5.0 / 9.0)
-
-    # Build the summary string with all calculated information
+    # Construct the summary string
     summary = (
         f"{len(weather_data)} Day Overview\n"
-        f"  The lowest temperature will be {min_number_c:.1f}°C, and will occur on {min_date}.\n"
-        f"  The highest temperature will be {max_number_c:.1f}°C, and will occur on {max_date}.\n"
-        f"  The average low this week is {average_min_c:.1f}°C.\n"
-        f"  The average high this week is {average_max_c:.1f}°C.\n"
+        f"  The lowest temperature will be {min_temp_c}, and will occur on {min_temp_date}.\n"
+        f"  The highest temperature will be {max_temp_c}, and will occur on {max_temp_date}.\n"
+        f"  The average low this week is {average_min_c}.\n"
+        f"  The average high this week is {average_max_c}.\n"
     )
 
-    # Return the final summary
+    # Return the full summary
     return summary
-
-# Call and print function with user input
-# print(generate_summary(get_csv_file_input))
 
 #-------------------------------------------------------------------#
 #                          Question Eight:                          #
@@ -365,6 +423,57 @@ def generate_summary(weather_data):
 # Load the weather data
 # collected_weather_data = load_data_from_csv(csv_file_input)
 
+# def generate_daily_summary(weather_data):
+#     """Outputs a daily summary for the given weather data.
+
+#     Args:
+#         weather_data: A list of lists, where each sublist represents a day of weather data.
+#     Returns:
+#         A string containing the summary information.
+#     """
+
+#     # Check if the input data is empty and return an empty string if it is
+#     if not weather_data:
+#         return ""
+
+#     # Create an empty string to accumulate the daily summaries
+#     daily_summary = ""
+
+#     # Loop through each row (each day's weather data)
+#     for row in weather_data:
+
+#         # Extract the ISO date string from the row
+#         date_iso = row[0]
+
+#         # Extract and clean the minimum Fahrenheit temperature
+#         min_number_f = float(str(row[1]).strip())
+
+#         # Extract and clean the maximum Fahrenheit temperature
+#         max_number_f = float(str(row[2]).strip())
+
+#         # Convert the minimum Fahrenheit value to Celsius
+#         min_number_c = (min_number_f - 32.0) * 5.0 / 9.0
+
+#         # Convert the maximum Fahrenheit value to Celsius
+#         max_number_c = (max_number_f - 32.0) * 5.0 / 9.0
+
+#         # Format the ISO date into a readable format (e.g. Tuesday 06 July 2021)
+#         date = datetime.fromisoformat(date_iso).strftime("%A %d %B %Y")
+
+#         # Add the formatted daily summary to the overall summary string
+#         daily_summary += (
+#             f"---- {date} ----\n"
+#             f"  Minimum Temperature: {min_number_c:.1f}°C\n"
+#             f"  Maximum Temperature: {max_number_c:.1f}°C\n\n"
+#         )
+
+#     # Return the daily summary
+#     return daily_summary
+
+# Call and print function with user input
+# print(generate_daily_summary(collected_weather_data))
+
+# Number 8 ---> Using the above functions:
 def generate_daily_summary(weather_data):
     """Outputs a daily summary for the given weather data.
 
@@ -374,43 +483,33 @@ def generate_daily_summary(weather_data):
         A string containing the summary information.
     """
 
-    # Check if the input data is empty and return an empty string if it is
+    # If the data list is empty, return an empty string
     if not weather_data:
         return ""
 
-    # Create an empty string to accumulate the daily summaries
+    # Create an empty string to store all daily summaries
     daily_summary = ""
 
-    # Loop through each row (each day's weather data)
+    # Loop through each day's data
     for row in weather_data:
-
-        # Extract the ISO date string from the row
+        # Extract date, min temp (F), and max temp (F)
         date_iso = row[0]
+        min_temp_f = float(row[1])
+        max_temp_f = float(row[2])
 
-        # Extract and clean the minimum Fahrenheit temperature
-        min_number_f = float(str(row[1]).strip())
+        # Convert temperatures to Celsius and format them
+        min_temp_c = format_temperature(convert_f_to_c(min_temp_f))
+        max_temp_c = format_temperature(convert_f_to_c(max_temp_f))
 
-        # Extract and clean the maximum Fahrenheit temperature
-        max_number_f = float(str(row[2]).strip())
+        # Convert date to readable format
+        readable_date = convert_date(date_iso)
 
-        # Convert the minimum Fahrenheit value to Celsius
-        min_number_c = (min_number_f - 32.0) * 5.0 / 9.0
-
-        # Convert the maximum Fahrenheit value to Celsius
-        max_number_c = (max_number_f - 32.0) * 5.0 / 9.0
-
-        # Format the ISO date into a readable format (e.g. Tuesday 06 July 2021)
-        date = datetime.fromisoformat(date_iso).strftime("%A %d %B %Y")
-
-        # Add the formatted daily summary to the overall summary string
+        # Append this day's summary to the overall string
         daily_summary += (
-            f"---- {date} ----\n"
-            f"  Minimum Temperature: {min_number_c:.1f}°C\n"
-            f"  Maximum Temperature: {max_number_c:.1f}°C\n\n"
+            f"---- {readable_date} ----\n"
+            f"  Minimum Temperature: {min_temp_c}\n"
+            f"  Maximum Temperature: {max_temp_c}\n\n"
         )
 
-    # Return the daily summary
+    # Return the completed daily summary
     return daily_summary
-
-# Call and print function with user input
-# print(generate_daily_summary(collected_weather_data))
